@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:my_app/bottom_bar.dart";
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -7,7 +8,33 @@ class MainPage extends StatefulWidget {
   final String title;
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => _LoaderState();
+}
+
+class _LoaderState extends State<MainPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBody: true,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: AnimatedBottomBar(
+        currentIcon: 0,
+        onTap: (some) => {},
+        icons: [
+          Icons.home_outlined,
+          Icons.wallet_outlined,
+          Icons.search,
+          Icons.settings_outlined
+        ],
+      ),
+      body: Center(
+        child: LoadingAnimationWidget.threeArchedCircle(
+          color: Colors.deepPurple.shade400,
+          size: 50,
+        ),
+      ),
+    );
+  }
 }
 
 class _MainPageState extends State<MainPage> {

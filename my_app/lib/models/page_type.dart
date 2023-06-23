@@ -1,0 +1,1 @@
+enum PageType { BLANK_PAGE, PAGE_WITH_DOCK }
