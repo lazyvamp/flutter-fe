@@ -12,11 +12,20 @@ class ElevatedButtonWidget extends StatefulWidget {
   action_model.Action? action;
   List<dynamic>? padding = List.empty();
   Widget child;
+  String type;
+  VoidCallback onPressed;
 
-  ElevatedButtonWidget(this.child, {super.key, this.padding, this.action});
+  ElevatedButtonWidget(this.type, this.child,
+      {super.key, this.padding, this.action, VoidCallback? onPressed})
+      : onPressed = onPressed ?? (() {});
 
   @override
-  State<ElevatedButtonWidget> createState() => _ElevatedButtonWidgetState();
+  State<ElevatedButtonWidget> createState() {
+    if (type == "CIRCULAR") {
+      return _CircularButtonWidgetState();
+    }
+    return _ElevatedButtonWidgetState();
+  }
 
   factory ElevatedButtonWidget.fromJson(Map<String, dynamic> map) {
     var childJson = map['child'];
@@ -29,6 +38,7 @@ class ElevatedButtonWidget extends StatefulWidget {
     }
 
     return ElevatedButtonWidget(
+      map['type'] ?? "default",
       child,
       action: action,
       padding: map['padding'],
@@ -42,10 +52,7 @@ class _ElevatedButtonWidgetState extends State<ElevatedButtonWidget> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepPurple,
-        minimumSize: const Size.fromHeight(40), // NEW
-      ),
+      style: getStyle(context),
       onPressed: () {
         handleButtonPress(context);
       },
@@ -53,21 +60,53 @@ class _ElevatedButtonWidgetState extends State<ElevatedButtonWidget> {
     );
   }
 
+  getStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Colors.deepPurple,
+      minimumSize: const Size.fromHeight(40), // NEW
+    );
+  }
+
+  Widget getLoader(BuildContext context) {
+    return LoadingAnimationWidget.prograssiveDots(
+        color: Colors.deepPurple.shade400, size: 30);
+  }
+
   getChild(BuildContext context) {
     if (isLoading) {
-      return LoadingAnimationWidget.prograssiveDots(
-          color: Colors.deepPurple.shade400, size: 30);
+      return getLoader(context);
     }
 
     return widget.child;
   }
 
   handleButtonPress(BuildContext context) {
+    widget.onPressed();
     if (widget.action != null) {
       setState(() {
         isLoading = true;
       });
       ActionExecutor.execute(widget.action!);
     }
+  }
+}
+
+class _CircularButtonWidgetState extends _ElevatedButtonWidgetState {
+  @override
+  getStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      shape: const CircleBorder(),
+      padding: const EdgeInsets.all(10),
+      // Button color
+      backgroundColor: Colors.deepPurple,
+      // Splash color
+      foregroundColor: Colors.deepPurple.shade100,
+    );
+  }
+
+  @override
+  Widget getLoader(BuildContext context) {
+    return LoadingAnimationWidget.threeArchedCircle(
+        color: Colors.white, size: 20);
   }
 }

@@ -21,6 +21,7 @@ class PageBuilderV2 extends StatelessWidget {
         body: render(context),
       );
     } catch (e) {
+      print(e.toString());
       return Scaffold(
         body: ErrorPage(),
       );

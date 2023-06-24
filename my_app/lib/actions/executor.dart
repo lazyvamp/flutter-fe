@@ -33,6 +33,7 @@ class PageFetchActionExecutor {
       Get.to(() => PageBuilderV2(body['data']),
           transition: Transition.downToUp,
           duration: const Duration(milliseconds: 500));
+      print("code is here");
     }
 
     throw Exception("Something went wrong");

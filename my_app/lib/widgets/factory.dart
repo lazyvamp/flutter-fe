@@ -15,6 +15,7 @@ class WidgetFactory {
         return ColumnContainerWidget.fromJson(map);
       case "ELEVATED_BUTTON":
         return ElevatedButtonWidget.fromJson(map);
+
       default:
         throw "invalid widget $widgetName";
     }
