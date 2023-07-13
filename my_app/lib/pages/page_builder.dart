@@ -57,7 +57,7 @@ class _PageBuilderState extends State<PageBuilder> {
   }
 
   Widget dynamicPageUI(Map<String, dynamic> map) {
-    print(map['data']['widgets']);
+    print(map);
     var children = List<Widget>.from(map['data']["widgets"]
         .map((x) => WidgetFactory.getWidget(x['widget'], x)));
 

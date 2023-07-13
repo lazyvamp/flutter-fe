@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 
+class PaddingUtils {
+  static Widget wrap(Widget widget, List<dynamic>? padding) {
+    if (padding == null) {
+      return widget;
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: (padding[0]).toDouble(),
+        right: (padding[1]).toDouble(),
+        top: (padding[2]).toDouble(),
+        bottom: (padding[3]).toDouble(),
+      ),
+      child: widget,
+    );
+  }
+}
+
 class IconUtils {
   static var ICON_MAP = {
     "arrow_forward": Icons.arrow_forward,

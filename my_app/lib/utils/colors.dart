@@ -4,6 +4,7 @@ class ColorUtils {
   static Map COLOR_MAP = {
     "white": Colors.white,
     "grey": Colors.grey,
+    "black": Colors.black,
     "grey.shade100": Colors.grey.shade100,
     "grey.shade200": Colors.grey.shade200,
     "grey.shade300": Colors.grey.shade300,

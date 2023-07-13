@@ -4,21 +4,23 @@ import 'package:my_app/utils/common.dart';
 import 'package:my_app/widgets/base.dart';
 
 class MaterialIconWidget extends BaseStateLessWidget {
-  final IconData iconData;
-  final Color color;
-  final double size;
+  Map<String, dynamic> params;
 
-  MaterialIconWidget(this.iconData, this.color, this.size);
+  MaterialIconWidget(this.params, {super.key, super.padding});
 
   @override
   Widget buildWidget(BuildContext context) {
+    var iconData = IconUtils.getIcon(params['icon']);
+    var color = ColorUtils.get(params['color']);
+    var size = params['size'].toDouble() ?? 20;
+
     return Icon(iconData, color: color, size: size);
   }
 
   factory MaterialIconWidget.fromJson(Map<String, dynamic> json) {
-    IconData? iconData = IconUtils.getIcon(json['icon']);
-    var color = ColorUtils.get(json['color']);
-
-    return MaterialIconWidget(iconData!, color, json['size']);
+    return MaterialIconWidget(
+      json,
+      padding: json['padding'],
+    );
   }
 }

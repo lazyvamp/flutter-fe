@@ -14,18 +14,23 @@ class PageBuilderV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("build called for page: ");
-    try {
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        extendBody: true,
-        body: render(context),
-      );
-    } catch (e) {
-      print(e.toString());
-      return Scaffold(
-        body: ErrorPage(),
-      );
-    }
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
+      body: render(context),
+    );
+    // try {
+    //   return Scaffold(
+    //     resizeToAvoidBottomInset: false,
+    //     extendBody: true,
+    //     body: render(context),
+    //   );
+    // } catch (e) {
+    //   print(e.toString());
+    //   return Scaffold(
+    //     body: ErrorPage(),
+    //   );
+    // }
   }
 
   Widget render(BuildContext context) {

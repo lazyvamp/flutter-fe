@@ -1,23 +1,21 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:my_app/actions/executor.dart';
 import 'package:my_app/models/actions.dart' as action_model;
-import 'package:my_app/pages/page_builder.dart';
-import 'package:my_app/widgets/base.dart';
 import 'package:my_app/widgets/factory.dart';
 
 class ElevatedButtonWidget extends StatefulWidget {
-  action_model.Action? action;
-  List<dynamic>? padding = List.empty();
-  Widget child;
   String type;
-  VoidCallback onPressed;
+  dynamic Function() preProcessor;
+  dynamic Function() postProcessor;
+  Map<String, dynamic> params;
 
-  ElevatedButtonWidget(this.type, this.child,
-      {super.key, this.padding, this.action, VoidCallback? onPressed})
-      : onPressed = onPressed ?? (() {});
+  ElevatedButtonWidget(this.params, this.type,
+      {super.key,
+      dynamic Function()? preProcessor,
+      dynamic Function()? postProcessor})
+      : preProcessor = preProcessor ?? (() {}),
+        postProcessor = postProcessor ?? (() {});
 
   @override
   State<ElevatedButtonWidget> createState() {
@@ -28,21 +26,8 @@ class ElevatedButtonWidget extends StatefulWidget {
   }
 
   factory ElevatedButtonWidget.fromJson(Map<String, dynamic> map) {
-    var childJson = map['child'];
-
-    Widget child = WidgetFactory.getWidget(childJson['widget'], childJson);
-    action_model.Action? action;
-
-    if (map['action'] != null) {
-      action = action_model.Action.fromJson(map['action']);
-    }
-
-    return ElevatedButtonWidget(
-      map['type'] ?? "default",
-      child,
-      action: action,
-      padding: map['padding'],
-    );
+    return ElevatedButtonWidget(map, map['type'] ?? "default",
+        preProcessor: map['preProcessor']);
   }
 }
 
@@ -77,16 +62,21 @@ class _ElevatedButtonWidgetState extends State<ElevatedButtonWidget> {
       return getLoader(context);
     }
 
-    return widget.child;
+    var childJson = widget.params['child'];
+    return WidgetFactory.getWidget(childJson['widget'], childJson);
   }
 
   handleButtonPress(BuildContext context) {
-    widget.onPressed();
-    if (widget.action != null) {
+    var x = widget.preProcessor();
+    print(x);
+
+    if (widget.params['action'] != null) {
       setState(() {
         isLoading = true;
       });
-      ActionExecutor.execute(widget.action!);
+      action_model.Action action =
+          action_model.Action.fromJson(widget.params['action']);
+      ActionExecutor.execute(action, data: x);
     }
   }
 }

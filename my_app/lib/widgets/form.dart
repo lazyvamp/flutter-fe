@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/widgets/factory.dart';
+import 'package:my_app/widgets/text_form_field.dart';
 
 // Create a Form widget.
 class SingleFieldFormWidget extends StatefulWidget {
   List<dynamic>? padding = List.empty();
-  Widget field;
-  Widget button;
+  Map<String, dynamic> params;
 
-  SingleFieldFormWidget(this.field, this.button, {super.key, this.padding});
+  SingleFieldFormWidget(this.params, {super.key, this.padding});
 
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
+  }
+
+  factory SingleFieldFormWidget.fromJson(Map<String, dynamic> json) {
+    return SingleFieldFormWidget(
+      json,
+      padding: json['padding'],
+    );
   }
 }
 
@@ -24,16 +32,43 @@ class MyCustomFormState extends State<SingleFieldFormWidget> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
 
+  Map<String, dynamic> _formData = Map();
+
+  updateFormData(String field, String? value) {
+    print("form data has changed: $field ${value!}");
+    _formData[field] = value;
+  }
+
+  Map<String, dynamic> getFormData() {
+    return _formData;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Row(
-        children: [widget.field, widget.button],
-      ),
-    );
+    var field = CustomTextFormField(widget.params['field'], updateFormData);
 
+    var buttonJson = widget.params['button'];
+    buttonJson['preProcessor'] = getFormData;
+    var button = WidgetFactory.getWidget(buttonJson['widget'], buttonJson);
+
+    Widget container = Container(
+        //color: Colors.red,
+        child: Row(
+      children: [Flexible(child: field), SizedBox(width: 130), button],
+    ));
+
+    if (widget.padding != null) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: (widget.padding![0]).toDouble(),
+          right: (widget.padding![1]).toDouble(),
+          top: (widget.padding![2]).toDouble(),
+          bottom: (widget.padding![3]).toDouble(),
+        ),
+        child: container,
+      );
+    }
+    return container;
     // return Form(
     //   key: _formKey,
     //   child: Column(
